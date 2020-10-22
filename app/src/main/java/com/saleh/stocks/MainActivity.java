@@ -5,6 +5,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -36,8 +38,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.main_menu_layout,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.add) {
+            Toast.makeText(this, "ADD", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onClick(View v) {
         Toast.makeText(this, "OnClick", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
