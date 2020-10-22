@@ -3,6 +3,7 @@ package com.saleh.stocks;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final List<Stocks> stocksList = new ArrayList<>();
     private RecyclerView recyclerView;
     private StocksAdapter stocksAdapter;
+    private SwipeRefreshLayout swiper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         recyclerView = findViewById(R.id.recycler);
+        swiper = findViewById(R.id.swipe);
         stocksAdapter = new StocksAdapter(stocksList,this);
         recyclerView.setAdapter(stocksAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -34,6 +37,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             stocksList.add(new Stocks("ABC"+i,"Name"+i,0,0,0));
         }
         stocksAdapter.notifyDataSetChanged();
+        swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Toast.makeText(MainActivity.this, "Refresh", Toast.LENGTH_SHORT).show();
+                swiper.setRefreshing(false);
+            }
+        });
 
     }
 
