@@ -83,4 +83,15 @@ public class Stocks implements Comparable<Stocks>, Serializable {
     public int compareTo(Stocks o) {
         return this.companyName.compareTo(o.getCompanyName());
     }
+
+    @Override
+    public String toString() {
+        return "Stocks{" +
+                "symbol='" + symbol + '\'' +
+                ", companyName='" + companyName + '\'' +
+                ", change=" + change +
+                ", changePercent=" + changePercent +
+                ", price=" + price +
+                '}';
+    }
 }

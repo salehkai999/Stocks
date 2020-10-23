@@ -80,7 +80,7 @@ public class SymbolNameDownloader implements Runnable {
         }
     }
 
-    public static List<String> getMatches(String match){
+    public static ArrayList<String> getMatches(String match){
         String matcher = match.toLowerCase().trim();
         HashSet<String> matchSet = new HashSet<>();
         for(String symbol : symbolNameMap.keySet()) {

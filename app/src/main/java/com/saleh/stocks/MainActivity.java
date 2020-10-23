@@ -203,7 +203,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void listDialog(String choice){
+        final ArrayList<String> results = SymbolNameDownloader.getMatches(choice);
+        if(results.size() == 0)
+            Toast.makeText(this, "No Such Stock", Toast.LENGTH_SHORT).show();
+        else if(results.size() == 1)
+            Toast.makeText(this, results.get(0), Toast.LENGTH_SHORT).show();
+        else {
+            String[] resultArray = results.toArray(new String[0]);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Make Selection");
+            builder.setItems(resultArray, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String symbol = results.get(which);
+                    Toast.makeText(MainActivity.this, symbol, Toast.LENGTH_SHORT).show();
+                    processSelectedSymbol(symbol);
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(MainActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
+                }
+            });
 
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
     }
+
+    private void processSelectedSymbol(String symbol){
+        String[] data = symbol.split("-");
+        StockDownloader stockDownloader = new StockDownloader(this,data[0].trim());
+        new Thread(stockDownloader).start();
+    }
+
+
 
 }

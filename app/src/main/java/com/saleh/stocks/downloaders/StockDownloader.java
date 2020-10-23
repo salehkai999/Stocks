@@ -5,9 +5,18 @@ import android.util.Log;
 
 import com.saleh.stocks.MainActivity;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class StockDownloader implements Runnable {
     private static final String TAG = "StockDownloader";
-    private static final String  URL = "https://cloud.iexapis.com/stable/stock/";
+    private static final String  API_URL = "https://cloud.iexapis.com/stable/stock/";
     private static final String API_KEY = "/quote?token=pk_de463bd240894f9695c33a9b8735fcce ";
     private MainActivity mainActivity;
     private String symbol;
@@ -21,10 +30,48 @@ public class StockDownloader implements Runnable {
     @Override
     public void run() {
 
-        Uri.Builder builder = Uri.parse(URL+symbol+API_KEY).buildUpon();
+        Uri.Builder builder = Uri.parse(API_URL+symbol+API_KEY).buildUpon();
         String stockURL =builder.toString();
         Log.d(TAG, "run: "+stockURL);
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            URL url = new URL(stockURL);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.connect();
+            if(urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK)
+            {
+                Log.d(TAG, "run: "+urlConnection.getResponseCode());
+                return;
+            }
+            InputStream inputStream = urlConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String data;
+            while ((data = bufferedReader.readLine()) != null) {
+                stringBuilder.append(data).append("\n");
+            }
+            Log.d(TAG, "run: "+stringBuilder.toString());
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        process(stringBuilder.toString());
+    }
+
+    private void process(String stock){
+        try{
+            //JSONArray jsonArray = new JSONArray(stock);
+            JSONObject jsonObject = new JSONObject(stock);
+            String symbol = jsonObject.getString("symbol");
+            String companyName = jsonObject.getString("companyName");
 
 
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
