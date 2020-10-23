@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.saleh.stocks.downloaders.StockDownloader;
 import com.saleh.stocks.downloaders.SymbolNameDownloader;
 
 import org.json.JSONArray;
@@ -56,7 +57,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setAdapter(stocksAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         SymbolNameDownloader symbolNameDownloader = new SymbolNameDownloader();
+        StockDownloader stockDownloader = new StockDownloader(this,"TGT");
         new Thread(symbolNameDownloader).start();
+        //new Thread(stockDownloader).start();
 
         loadJSONFile();
          /*for(int i=0;i<5;i++) {
