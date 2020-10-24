@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.saleh.stocks.MainActivity;
+import com.saleh.stocks.Stocks;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -66,8 +67,28 @@ public class StockDownloader implements Runnable {
             JSONObject jsonObject = new JSONObject(stock);
             String symbol = jsonObject.getString("symbol");
             String companyName = jsonObject.getString("companyName");
+            String priceString = jsonObject.getString("latestPrice");
+            double price = 0.0;
+            if(!priceString.isEmpty())
+                price = Double.parseDouble(priceString);
+            String changeString = jsonObject.getString("change");
+            double change =0.0;
+            if(!changeString.isEmpty())
+                change = Double.parseDouble(changeString);
+            String percentageString = jsonObject.getString("changePercent");
+            double percentage = 0.0;
+            if(!percentageString.isEmpty())
+                percentage = Double.parseDouble(percentageString);
 
+            final Stocks stocks = new Stocks(symbol,companyName,change,percentage,price);
+            Log.d(TAG, "process: "+stocks.toString());
 
+            mainActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mainActivity.saveStock(stocks);
+                }
+            });
 
         }
         catch (Exception e){

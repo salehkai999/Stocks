@@ -104,7 +104,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onLongClick(View v) {
-        Toast.makeText(this, "OnLongClick", Toast.LENGTH_LONG).show();
+        final int index = recyclerView.getChildLayoutPosition(v);
+        Toast.makeText(this, "OnLongClick "+stocksList.get(index).getSymbol(), Toast.LENGTH_LONG).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                stocksList.remove(index);
+                stocksAdapter.notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.setMessage("Delete "+stocksList.get(index).getSymbol()+"?");
+        builder.setTitle("Deletion");
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
         return true;
     }
 
@@ -239,5 +258,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    public void saveStock(Stocks stocks) {
+        if(stocks == null)
+        {
+            Toast.makeText(this, "NULL", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(stocksList.contains(stocks)) {
+            Toast.makeText(this, "Already Existing", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        stocksList.add(stocks);
+        Collections.sort(stocksList);
+        stocksAdapter.notifyDataSetChanged();
 
+    }
 }
