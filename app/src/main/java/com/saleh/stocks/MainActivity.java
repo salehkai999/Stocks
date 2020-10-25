@@ -32,6 +32,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private StocksAdapter stocksAdapter;
     private SwipeRefreshLayout swiper;
     private static final String TAG = "MainActivity";
-    private static String stocksURL = "https://www.marketwatch.com/";
+    private static String stocksURL = "https://www.marketwatch.com/investing/stock/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setAdapter(stocksAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         SymbolNameDownloader symbolNameDownloader = new SymbolNameDownloader();
-        StockDownloader stockDownloader = new StockDownloader(this,"TGT");
+        //StockDownloader stockDownloader = new StockDownloader(this,"TGT");
         new Thread(symbolNameDownloader).start();
         //new Thread(stockDownloader).start();
 
@@ -97,8 +99,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         Toast.makeText(this, "OnClick", Toast.LENGTH_SHORT).show();
+        int index = recyclerView.getChildLayoutPosition(v);
+        Uri.Builder builder = Uri.parse(stocksURL+stocksList.get(index).getSymbol()).buildUpon();
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(stocksURL));
+        try {
+            intent.setData(Uri.parse(String.valueOf(new URL(builder.toString()))));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
         startActivity(intent);
     }
 
@@ -225,8 +233,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final ArrayList<String> results = SymbolNameDownloader.getMatches(choice);
         if(results.size() == 0)
             Toast.makeText(this, "No Such Stock", Toast.LENGTH_SHORT).show();
-        else if(results.size() == 1)
+        else if(results.size() == 1) {
             Toast.makeText(this, results.get(0), Toast.LENGTH_SHORT).show();
+            processSelectedSymbol(results.get(0));
+        }
         else {
             String[] resultArray = results.toArray(new String[0]);
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
