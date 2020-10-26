@@ -1,5 +1,6 @@
 package com.saleh.stocks;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+
+import static com.saleh.stocks.R.color;
 
 public class StocksAdapter extends RecyclerView.Adapter<StocksViewHolder> {
 
@@ -31,6 +34,7 @@ public class StocksAdapter extends RecyclerView.Adapter<StocksViewHolder> {
         return new StocksViewHolder(itemView);
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull StocksViewHolder holder, int position) {
 
@@ -38,8 +42,21 @@ public class StocksAdapter extends RecyclerView.Adapter<StocksViewHolder> {
         holder.companyText.setText(stocks.getCompanyName());
         holder.priceText.setText(stocks.getPrice()+"");
         holder.codeText.setText(stocks.getSymbol());
-        holder.dataText.setText(stocks.getChange()+" "+stocks.getChangePercent());
-
+        String changePercent = "("+stocks.getChangePercent()*100+"%)";
+        String logo = "-";
+        holder.dataText.setText(stocks.getChange()+" "+changePercent);
+        if(stocks.getChange() > 0){
+            holder.companyText.setTextColor(mActivity.getResources().getColor(color.green));
+            holder.dataText.setTextColor(mActivity.getResources().getColor(color.green));
+            holder.priceText.setTextColor(mActivity.getResources().getColor(color.green));
+            holder.codeText.setTextColor(mActivity.getResources().getColor(color.green));
+        }
+        else {
+            holder.companyText.setTextColor(mActivity.getResources().getColor(color.red));
+            holder.dataText.setTextColor(mActivity.getResources().getColor(color.red));
+            holder.priceText.setTextColor(mActivity.getResources().getColor(color.red));
+            holder.codeText.setTextColor(mActivity.getResources().getColor(color.red));
+        }
 
     }
 

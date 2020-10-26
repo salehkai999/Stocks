@@ -21,12 +21,12 @@ public class StocksViewHolder extends RecyclerView.ViewHolder {
     public StocksViewHolder(@NonNull View itemView) {
         super(itemView);
         codeText = itemView.findViewById(id.codeText);
-        codeText.setTextColor(color.teal_700);
+        //codeText.setTextColor(color.teal_700);
         priceText = itemView.findViewById(id.priceText);
-        priceText.setTextColor(color.teal_700);
+        //priceText.setTextColor(color.teal_700);
         dataText = itemView.findViewById(id.dataText);
-        dataText.setTextColor(color.teal_700);
+        //dataText.setTextColor(color.teal_700);
         companyText = itemView.findViewById(id.companyText);
-        companyText.setTextColor(color.teal_700);
+        //companyText.setTextColor(color.teal_700);
     }
 }
