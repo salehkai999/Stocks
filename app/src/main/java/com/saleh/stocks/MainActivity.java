@@ -9,6 +9,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
@@ -39,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener, SwipeRefreshLayout.OnRefreshListener {
 
 
     private final List<Stocks> stocksList = new ArrayList<>();
@@ -64,17 +66,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //new Thread(stockDownloader).start();
 
         loadJSONFile();
-         /*for(int i=0;i<5;i++) {
-            stocksList.add(new Stocks("ABC"+i,"Name"+i,0,0,0));
+         /*for(int i=0;i<stocksList.size();i++) {
+            //stocksList.add(new Stocks("ABC"+i,"Name"+i,0,0,0));
+             stocksList.get(i).setChange(0.0);
+             stocksList.get(i).setPrice(0.0);
         }*/
         stocksAdapter.notifyDataSetChanged();
-        swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Toast.makeText(MainActivity.this, "Refresh", Toast.LENGTH_SHORT).show();
-                swiper.setRefreshing(false);
-            }
-        });
+        swiper.setOnRefreshListener(this);
 
     }
 
@@ -88,12 +86,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.add) {
             Toast.makeText(this, "ADD", Toast.LENGTH_SHORT).show();
-            choiceDialog();
+            if(isConnected())
+                choiceDialog();
+            else {
+                noNetworkDialog();
+            }
             //stocksList.add(new Stocks("TGT","Target",0.0,0.0,0.0));
             //stocksAdapter.notifyDataSetChanged();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void noNetworkDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("No Network");
+        builder.setMessage("Not Connected to the Internet");
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     @Override
@@ -267,6 +277,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         new Thread(stockDownloader).start();
     }
 
+    private boolean isConnected() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) {
+            Toast.makeText(this, "Cannot access ConnectivityManager", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+        if (netInfo != null && netInfo.isConnected()) {
+           return true;
+        } else {
+            return false;
+        }
+    }
+
 
     public void saveStock(Stocks stocks) {
         if(stocks == null)
@@ -278,9 +305,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "Already Existing", Toast.LENGTH_SHORT).show();
             return;
         }
+        swiper.setRefreshing(false);
         stocksList.add(stocks);
         Collections.sort(stocksList);
         stocksAdapter.notifyDataSetChanged();
 
+    }
+
+    @Override
+    public void onRefresh() {
+        Toast.makeText(this, "Refreshing", Toast.LENGTH_SHORT).show();
+        for(int i=0;i<stocksList.size();i++) {
+            new Thread(new StockDownloader(this, stocksList.get(i).getSymbol(),true,i)).start();
+            //stocksList.remove(i);
+            //stocksAdapter.notifyDataSetChanged();
+        }
+        //swiper.setRefreshing(false);
+    }
+
+    public void updateStock(Stocks stocks, int index) {
+        stocksList.get(index).setChangePercent(stocks.getChangePercent());
+        stocksList.get(index).setChange(stocks.getChange());
+        stocksList.get(index).setPrice(stocks.getPrice());
+        stocksAdapter.notifyDataSetChanged();
+        Log.d(TAG, "updateStock: "+stocks.getChange());
+        swiper.setRefreshing(false);
     }
 }

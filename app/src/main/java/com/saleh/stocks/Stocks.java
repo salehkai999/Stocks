@@ -76,7 +76,7 @@ public class Stocks implements Comparable<Stocks>, Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(symbol, companyName, change, changePercent, price);
+        return Objects.hash(symbol, companyName);
     }
 
     @Override

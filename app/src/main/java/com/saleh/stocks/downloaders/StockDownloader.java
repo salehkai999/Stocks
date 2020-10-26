@@ -21,12 +21,20 @@ public class StockDownloader implements Runnable {
     private static final String API_KEY = "/quote?token=pk_de463bd240894f9695c33a9b8735fcce ";
     private MainActivity mainActivity;
     private String symbol;
+    private boolean update = false;
+    private int index = -1;
 
     public StockDownloader(MainActivity mainActivity, String symbol) {
         this.mainActivity = mainActivity;
         this.symbol = symbol;
     }
 
+    public StockDownloader(MainActivity mainActivity, String symbol, boolean update, int index) {
+        this.mainActivity = mainActivity;
+        this.symbol = symbol;
+        this.update = update;
+        this.index = index;
+    }
 
     @Override
     public void run() {
@@ -86,7 +94,10 @@ public class StockDownloader implements Runnable {
             mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mainActivity.saveStock(stocks);
+                    if(update)
+                        mainActivity.updateStock(stocks,index);
+                    else
+                        mainActivity.saveStock(stocks);
                 }
             });
 
