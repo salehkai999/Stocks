@@ -51,12 +51,19 @@ public class StocksAdapter extends RecyclerView.Adapter<StocksViewHolder> {
             holder.priceText.setTextColor(mActivity.getResources().getColor(color.green));
             holder.codeText.setTextColor(mActivity.getResources().getColor(color.green));
         }
-        else {
+        else if (stocks.getChange() < 0) {
             holder.companyText.setTextColor(mActivity.getResources().getColor(color.red));
             holder.dataText.setTextColor(mActivity.getResources().getColor(color.red));
             holder.priceText.setTextColor(mActivity.getResources().getColor(color.red));
             holder.codeText.setTextColor(mActivity.getResources().getColor(color.red));
         }
+        else {
+            holder.companyText.setTextColor(mActivity.getResources().getColor(color.white));
+            holder.dataText.setTextColor(mActivity.getResources().getColor(color.white));
+            holder.priceText.setTextColor(mActivity.getResources().getColor(color.white));
+            holder.codeText.setTextColor(mActivity.getResources().getColor(color.white));
+        }
+
 
     }
 

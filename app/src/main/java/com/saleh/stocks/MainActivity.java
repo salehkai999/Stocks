@@ -62,10 +62,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         SymbolNameDownloader symbolNameDownloader = new SymbolNameDownloader();
         //StockDownloader stockDownloader = new StockDownloader(this,"TGT");
-        new Thread(symbolNameDownloader).start();
+        loadJSONFile();
+        if(isConnected()) {
+            new Thread(symbolNameDownloader).start();
+            for(int i=0;i<stocksList.size();i++) {
+                new Thread(new StockDownloader(this, stocksList.get(i).getSymbol(),true,i)).start();
+            }
+        }
+        else {
+            noNetworkDialog();
+            for(int i=0;i<stocksList.size();i++)
+            {
+                stocksList.get(i).setPrice(0.0);
+                stocksList.get(i).setChange(0.0);
+                stocksList.get(i).setChangePercent(0.0);
+            }
+        }
         //new Thread(stockDownloader).start();
 
-        loadJSONFile();
+
          /*for(int i=0;i<stocksList.size();i++) {
             //stocksList.add(new Stocks("ABC"+i,"Name"+i,0,0,0));
              stocksList.get(i).setChange(0.0);
@@ -309,6 +324,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         stocksList.add(stocks);
         Collections.sort(stocksList);
         stocksAdapter.notifyDataSetChanged();
+        saveJSON();
 
     }
 
