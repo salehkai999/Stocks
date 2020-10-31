@@ -42,7 +42,7 @@ public class StocksAdapter extends RecyclerView.Adapter<StocksViewHolder> {
         holder.companyText.setText(stocks.getCompanyName());
         holder.priceText.setText(stocks.getPrice()+"");
         holder.codeText.setText(stocks.getSymbol());
-        String changePercent = "("+stocks.getChangePercent()*100+"%)";
+        String changePercent = "("+String.format("%.2f",(stocks.getChangePercent()*100))+"%)";
         String logo = "-";
         holder.dataText.setText(stocks.getChange()+" "+changePercent);
         if(stocks.getChange() > 0){
@@ -50,18 +50,24 @@ public class StocksAdapter extends RecyclerView.Adapter<StocksViewHolder> {
             holder.dataText.setTextColor(mActivity.getResources().getColor(color.green));
             holder.priceText.setTextColor(mActivity.getResources().getColor(color.green));
             holder.codeText.setTextColor(mActivity.getResources().getColor(color.green));
+            holder.changeSymbol.setText("▴");
+            holder.changeSymbol.setTextColor(mActivity.getResources().getColor(color.green));
         }
         else if (stocks.getChange() < 0) {
             holder.companyText.setTextColor(mActivity.getResources().getColor(color.red));
             holder.dataText.setTextColor(mActivity.getResources().getColor(color.red));
             holder.priceText.setTextColor(mActivity.getResources().getColor(color.red));
             holder.codeText.setTextColor(mActivity.getResources().getColor(color.red));
+            holder.changeSymbol.setText("▾");
+            holder.changeSymbol.setTextColor(mActivity.getResources().getColor(color.red));
         }
         else {
             holder.companyText.setTextColor(mActivity.getResources().getColor(color.white));
             holder.dataText.setTextColor(mActivity.getResources().getColor(color.white));
             holder.priceText.setTextColor(mActivity.getResources().getColor(color.white));
             holder.codeText.setTextColor(mActivity.getResources().getColor(color.white));
+            holder.changeSymbol.setText("-");
+            holder.changeSymbol.setTextColor(mActivity.getResources().getColor(color.white));
         }
 
 

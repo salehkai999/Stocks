@@ -15,7 +15,7 @@ public class StocksViewHolder extends RecyclerView.ViewHolder {
     TextView priceText;
     TextView dataText;
     TextView companyText;
-
+    TextView changeSymbol;
 
     @SuppressLint("ResourceAsColor")
     public StocksViewHolder(@NonNull View itemView) {
@@ -28,5 +28,7 @@ public class StocksViewHolder extends RecyclerView.ViewHolder {
         //dataText.setTextColor(color.teal_700);
         companyText = itemView.findViewById(id.companyText);
         //companyText.setTextColor(color.teal_700);
+        changeSymbol = itemView.findViewById(id.changeSymbol);
+
     }
 }
