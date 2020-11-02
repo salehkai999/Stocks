@@ -67,8 +67,8 @@ public class Stocks implements Comparable<Stocks>, Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Stocks stocks = (Stocks) o;
-        return  Objects.equals(symbol, stocks.symbol) &&
-                Objects.equals(companyName, stocks.companyName);
+        return  Objects.equals(symbol, stocks.symbol);
+
     }
 
     @Override
@@ -78,7 +78,7 @@ public class Stocks implements Comparable<Stocks>, Serializable {
 
     @Override
     public int compareTo(Stocks o) {
-        return this.companyName.compareTo(o.getCompanyName());
+        return this.symbol.compareTo(o.getSymbol());
     }
 
     @Override

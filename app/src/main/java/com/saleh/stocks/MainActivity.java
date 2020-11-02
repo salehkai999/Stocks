@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //new Thread(stockDownloader).start();
 
 
+
          /*for(int i=0;i<stocksList.size();i++) {
             //stocksList.add(new Stocks("ABC"+i,"Name"+i,0,0,0));
              stocksList.get(i).setChange(0.0);
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        Toast.makeText(this, "OnClick", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "OnClick", Toast.LENGTH_SHORT).show();
         int index = recyclerView.getChildLayoutPosition(v);
         Uri.Builder builder = Uri.parse(stocksURL+stocksList.get(index).getSymbol()).buildUpon();
         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -138,13 +139,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onLongClick(View v) {
         final int index = recyclerView.getChildLayoutPosition(v);
-        Toast.makeText(this, "OnLongClick "+stocksList.get(index).getSymbol(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "OnLongClick "+stocksList.get(index).getSymbol(), Toast.LENGTH_LONG).show();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 stocksList.remove(index);
                 stocksAdapter.notifyDataSetChanged();
+                saveJSON();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
