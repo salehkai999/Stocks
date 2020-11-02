@@ -227,8 +227,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void choiceDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final EditText stockText = new EditText(this);
-        stockText.setInputType(InputType.TYPE_CLASS_TEXT);
+        stockText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS | InputType.TYPE_CLASS_TEXT);
         stockText.setGravity(Gravity.CENTER_HORIZONTAL);
+        //stockText.
         //stockText.
         builder.setView(stockText);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -256,8 +257,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void listDialog(String choice){
         final ArrayList<String> results = SymbolNameDownloader.getMatches(choice);
-        if(results.size() == 0)
+        if(results.size() == 0) {
             Toast.makeText(this, "No Such Stock", Toast.LENGTH_SHORT).show();
+            noSuchStockDialog(choice);
+        }
         else if(results.size() == 1) {
             Toast.makeText(this, results.get(0), Toast.LENGTH_SHORT).show();
             processSelectedSymbol(results.get(0));
@@ -285,6 +288,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             alertDialog.show();
         }
     }
+
 
     private void processSelectedSymbol(String symbol){
         String[] data = symbol.split("-");
@@ -317,6 +321,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
         if(stocksList.contains(stocks)) {
+            duplicatedDialog(stocks.getSymbol());
             Toast.makeText(this, "Already Existing", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -331,6 +336,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onRefresh() {
         Toast.makeText(this, "Refreshing", Toast.LENGTH_SHORT).show();
+        if(!isConnected()) {
+            noNetworkDialog();
+            swiper.setRefreshing(false);
+            return;
+        }
         for(int i=0;i<stocksList.size();i++) {
             new Thread(new StockDownloader(this, stocksList.get(i).getSymbol(),true,i)).start();
             //stocksList.remove(i);
@@ -347,4 +357,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d(TAG, "updateStock: "+stocks.getChange());
         swiper.setRefreshing(false);
     }
+
+    private void duplicatedDialog(String symbol){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Duplicate Stock");
+        builder.setMessage("Stock "+symbol+" Already Exists");
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void noSuchStockDialog(String choice) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Stock Not Found: "+choice);
+        builder.setMessage("No Such Data!");
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 }
