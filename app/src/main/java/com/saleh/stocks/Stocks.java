@@ -67,10 +67,7 @@ public class Stocks implements Comparable<Stocks>, Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Stocks stocks = (Stocks) o;
-        return Double.compare(stocks.change, change) == 0 &&
-                Double.compare(stocks.changePercent, changePercent) == 0 &&
-                Double.compare(stocks.price, price) == 0 &&
-                Objects.equals(symbol, stocks.symbol) &&
+        return  Objects.equals(symbol, stocks.symbol) &&
                 Objects.equals(companyName, stocks.companyName);
     }
 
